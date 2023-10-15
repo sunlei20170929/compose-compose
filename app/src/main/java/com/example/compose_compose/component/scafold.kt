@@ -75,6 +75,8 @@ fun myScaffold(modifier: Modifier)  {
             Button(onClick={}){
                 Text("this is called filled button")
             }
+
+            CardContent(modifier = Modifier)
         }
     }
 }

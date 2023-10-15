@@ -44,6 +44,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "compose home"){
         composable("base"){}
         composable("advanced"){}
+
         //nested navigation
         navigation(startDestination = "nestedgraph",route = "submodule"){
             composable(route="subhome"){}
