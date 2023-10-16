@@ -33,6 +33,10 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -61,10 +65,37 @@ fun myScaffold(modifier: Modifier)  {
 
     var presses = remember { mutableStateOf(0) }
 
+//    val sheetState = rememberModalBottomSheetState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var showBottmSheet by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
+        snackbarHost = {
+                       SnackbarHost(hostState = snackbarHostState) {
+                       }
+        },
         topBar = {slotOfTopAppBar(modifier = Modifier)},
         bottomBar = {slotOfBottomBar(Modifier)},
-        floatingActionButton = {slotOfFAB(Modifier) }
+        floatingActionButton = {
+//            slotOfFAB(Modifier)
+            ExtendedFloatingActionButton(onClick = {
+                scope.launch {
+                    snackbarHostState.showSnackbar("Snackbar")
+                }
+            },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.secondary,
+                shape = CircleShape,
+
+//        icon = { Icon(Icons.Filled.Edit, "Extended floating action button.") },
+//        text = { Text(text="extend fab") }
+            ) {
+                Icon(Icons.Filled.Add, "Small floating action button.")
+        }}
     ) {
         Column(modifier = Modifier.padding(it), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
@@ -78,6 +109,23 @@ fun myScaffold(modifier: Modifier)  {
                     You have pressed the floating action button $presses times.
                 """.trimIndent(),
             )
+
+            var checked by remember {
+                mutableStateOf(true)
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange={checked=it}
+            )
+
+            var sliderPosition by remember { mutableStateOf(0f) }
+            Slider(
+                value = sliderPosition,
+                onValueChange = {
+                    sliderPosition = it
+                }
+            )
+            Text(text = sliderPosition.toString())
 
             var curProgress by remember { mutableStateOf(0f) }
             var loading by remember { mutableStateOf(false) }
@@ -102,6 +150,25 @@ fun myScaffold(modifier: Modifier)  {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),progress=curProgress)
 
             CardContent(modifier = Modifier)
+
+            //bottom sheet
+//            if(showBottmSheet)
+//                ModalBottomSheet(
+//                    onDismissRequest = {
+//                        showBottomSheet = false
+//                    },
+//                    sheetState = sheetState
+//                ) {
+//                    // Sheet content
+//                    Button(onClick = {
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                showBottomSheet = false
+//                            }
+//                        }
+//                    }) {
+//                        Text("Hide bottom sheet")
+//                    }
         }
     }
 }
@@ -189,10 +256,13 @@ fun slotOfBottomBar(modifier: Modifier){
 
 @Composable
 fun slotOfFAB(modifier: Modifier){
-    LargeFloatingActionButton(onClick = { },
+    LargeFloatingActionButton(onClick = {
+
+    },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.secondary,
         shape = CircleShape,
+
 //        icon = { Icon(Icons.Filled.Edit, "Extended floating action button.") },
 //        text = { Text(text="extend fab") }
         ) {
