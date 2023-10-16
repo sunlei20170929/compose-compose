@@ -29,16 +29,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -46,6 +54,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,10 +65,37 @@ fun myScaffold(modifier: Modifier)  {
 
     var presses = remember { mutableStateOf(0) }
 
+//    val sheetState = rememberModalBottomSheetState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var showBottmSheet by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
+        snackbarHost = {
+                       SnackbarHost(hostState = snackbarHostState) {
+                       }
+        },
         topBar = {slotOfTopAppBar(modifier = Modifier)},
         bottomBar = {slotOfBottomBar(Modifier)},
-        floatingActionButton = {slotOfFAB(Modifier) }
+        floatingActionButton = {
+//            slotOfFAB(Modifier)
+            ExtendedFloatingActionButton(onClick = {
+                scope.launch {
+                    snackbarHostState.showSnackbar("Snackbar")
+                }
+            },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.secondary,
+                shape = CircleShape,
+
+//        icon = { Icon(Icons.Filled.Edit, "Extended floating action button.") },
+//        text = { Text(text="extend fab") }
+            ) {
+                Icon(Icons.Filled.Add, "Small floating action button.")
+        }}
     ) {
         Column(modifier = Modifier.padding(it), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
@@ -72,13 +110,76 @@ fun myScaffold(modifier: Modifier)  {
                 """.trimIndent(),
             )
 
-            Button(onClick={}){
-                Text("this is called filled button")
+            var checked by remember {
+                mutableStateOf(true)
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange={checked=it}
+            )
+
+            var sliderPosition by remember { mutableStateOf(0f) }
+            Slider(
+                value = sliderPosition,
+                onValueChange = {
+                    sliderPosition = it
+                }
+            )
+            Text(text = sliderPosition.toString())
+
+            var curProgress by remember { mutableStateOf(0f) }
+            var loading by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+
+            Button(onClick={
+                loading = true
+                scope.launch {
+                    //run update lambda in a coroutine scope
+                    loadingProgress{progress->
+                        //update ui
+                        curProgress = progress
+                    }
+                    loading = false
+                }
+            },enabled = !loading){
+                Text("start loading")
             }
 
+            if(loading)
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),progress=curProgress)
+
             CardContent(modifier = Modifier)
+
+            //bottom sheet
+//            if(showBottmSheet)
+//                ModalBottomSheet(
+//                    onDismissRequest = {
+//                        showBottomSheet = false
+//                    },
+//                    sheetState = sheetState
+//                ) {
+//                    // Sheet content
+//                    Button(onClick = {
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                showBottomSheet = false
+//                            }
+//                        }
+//                    }) {
+//                        Text("Hide bottom sheet")
+//                    }
         }
     }
+}
+
+suspend fun loadingProgress(updateProgress:(Float)->Unit){
+    for(i in 1..100){
+        updateProgress(i.toFloat()/100)  //modify value and update ui
+        delay(200)
+    }
+
+
 }
 
 @Preview
@@ -87,6 +188,7 @@ fun showScaffold(){
     myScaffold(modifier = Modifier)
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun slotOfTopAppBar(modifier: Modifier){
@@ -154,10 +256,13 @@ fun slotOfBottomBar(modifier: Modifier){
 
 @Composable
 fun slotOfFAB(modifier: Modifier){
-    LargeFloatingActionButton(onClick = { },
+    LargeFloatingActionButton(onClick = {
+
+    },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.secondary,
         shape = CircleShape,
+
 //        icon = { Icon(Icons.Filled.Edit, "Extended floating action button.") },
 //        text = { Text(text="extend fab") }
         ) {
