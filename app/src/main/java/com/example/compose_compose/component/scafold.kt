@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -37,8 +38,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -46,6 +50,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,13 +79,40 @@ fun myScaffold(modifier: Modifier)  {
                 """.trimIndent(),
             )
 
-            Button(onClick={}){
-                Text("this is called filled button")
+            var curProgress by remember { mutableStateOf(0f) }
+            var loading by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+
+            Button(onClick={
+                loading = true
+                scope.launch {
+                    //run update lambda in a coroutine scope
+                    loadingProgress{progress->
+                        //update ui
+                        curProgress = progress
+                    }
+                    loading = false
+                }
+            },enabled = !loading){
+                Text("start loading")
             }
+
+            if(loading)
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(),progress=curProgress)
 
             CardContent(modifier = Modifier)
         }
     }
+}
+
+suspend fun loadingProgress(updateProgress:(Float)->Unit){
+    for(i in 1..100){
+        updateProgress(i.toFloat()/100)  //modify value and update ui
+        delay(200)
+    }
+
+
 }
 
 @Preview
@@ -87,6 +121,7 @@ fun showScaffold(){
     myScaffold(modifier = Modifier)
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun slotOfTopAppBar(modifier: Modifier){

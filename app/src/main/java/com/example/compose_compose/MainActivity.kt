@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.compose_compose.component.myScaffold
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +42,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     //create navHost
-    NavHost(navController = navController, startDestination = "compose home"){
+    NavHost(navController = navController, startDestination = "myhome"){
+        composable("myhome"){
+            myScaffold(Modifier)
+        }
         composable("base"){}
         composable("advanced"){}
 
@@ -50,16 +54,18 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             composable(route="subhome"){}
         }
     }
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+//    Text(
+//        text = "Hello $name!",
+//        modifier = modifier
+//    )
+//
+//    myScaffold(Modifier)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposecomposeTheme {
-        Greeting("Android")
+        Greeting("Compose")
     }
 }
