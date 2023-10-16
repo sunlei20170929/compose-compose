@@ -54,7 +54,10 @@ dependencies {
 //    val nav_version = "2.5.3"
     //导航
     implementation("androidx.navigation:navigation-compose:2.5.3")
-
+    //coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    //glide
+    implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
