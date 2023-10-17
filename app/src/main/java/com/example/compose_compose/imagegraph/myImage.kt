@@ -10,8 +10,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun firstImage(modifier: Modifier){
     Canvas(modifier = Modifier.fillMaxSize()){
@@ -21,6 +25,8 @@ fun firstImage(modifier: Modifier){
 
         val canvasQuadrantSize = size / 2F
 
+        //
+//        val textMeasurer = rememberTextMeasurer()
 
         inset(50F, 30F) {
             drawRect(
@@ -55,6 +61,7 @@ fun firstImage(modifier: Modifier){
             radius = size.minDimension / 4
         )
 
+//        drawText(textMeasurer,"Hello Canvas Draw Scope")
 
     }
 }
