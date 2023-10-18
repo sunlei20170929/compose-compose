@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.compose_compose.ui.basic.layout.animate.expandBox
+import com.example.compose_compose.ui.basic.layout.animate.movedBox
 import com.example.compose_compose.ui.basic.layout.component.myScaffold
 import com.example.compose_compose.ui.basic.layout.gesture.basicScroll
 import com.example.compose_compose.ui.basic.layout.gesture.dragSomething
@@ -52,7 +54,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //            testScrollable(Modifier)
 //            nestScroll(modifier = Modifier)
 //            dragSomething(modifier = Modifier)
-            interActionDemo(Modifier)
+//            interActionDemo(Modifier)
+//            expandBox(Modifier)
+            movedBox(Modifier)
         }
         composable("base"){}
         composable("advanced"){}
