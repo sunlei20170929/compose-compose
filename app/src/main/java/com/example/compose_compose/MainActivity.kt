@@ -15,13 +15,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.compose_compose.ui.basic.layout.component.myScaffold
+import com.example.compose_compose.ui.basic.layout.gesture.basicScroll
+import com.example.compose_compose.ui.basic.layout.gesture.dragSomething
+import com.example.compose_compose.ui.basic.layout.gesture.interActionDemo
+import com.example.compose_compose.ui.basic.layout.gesture.nestScroll
+import com.example.compose_compose.ui.basic.layout.gesture.testScrollable
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContent {
             ComposecomposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -44,7 +47,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     //create navHost
     NavHost(navController = navController, startDestination = "myhome"){
         composable("myhome"){
-            myScaffold(Modifier)
+//            myScaffold(Modifier)
+//            basicScroll(Modifier)
+//            testScrollable(Modifier)
+//            nestScroll(modifier = Modifier)
+//            dragSomething(modifier = Modifier)
+            interActionDemo(Modifier)
         }
         composable("base"){}
         composable("advanced"){}
