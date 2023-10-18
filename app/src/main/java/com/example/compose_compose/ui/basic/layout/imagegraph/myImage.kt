@@ -1,4 +1,4 @@
-package com.example.compose_compose.imagegraph
+package com.example.compose_compose.ui.basic.layout.imagegraph
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize

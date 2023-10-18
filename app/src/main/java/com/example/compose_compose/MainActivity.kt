@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.compose_compose.component.myScaffold
+import com.example.compose_compose.ui.basic.layout.component.myScaffold
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
 class MainActivity : ComponentActivity() {

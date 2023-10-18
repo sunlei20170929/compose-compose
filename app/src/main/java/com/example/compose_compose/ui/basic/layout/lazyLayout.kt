@@ -1,4 +1,4 @@
-package com.example.compose_compose.layout
+package com.example.compose_compose.ui.basic.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

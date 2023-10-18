@@ -1,4 +1,4 @@
-package com.example.compose_compose.component
+package com.example.compose_compose.ui.basic.layout.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding

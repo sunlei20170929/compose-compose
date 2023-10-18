@@ -1,4 +1,4 @@
-package com.example.compose_compose.component
+package com.example.compose_compose.ui.basic.layout.component
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.shapes.OvalShape
@@ -78,8 +78,8 @@ fun myScaffold(modifier: Modifier)  {
                        SnackbarHost(hostState = snackbarHostState) {
                        }
         },
-        topBar = {slotOfTopAppBar(modifier = Modifier)},
-        bottomBar = {slotOfBottomBar(Modifier)},
+        topBar = { slotOfTopAppBar(modifier = Modifier) },
+        bottomBar = { slotOfBottomBar(Modifier) },
         floatingActionButton = {
 //            slotOfFAB(Modifier)
             ExtendedFloatingActionButton(onClick = {
