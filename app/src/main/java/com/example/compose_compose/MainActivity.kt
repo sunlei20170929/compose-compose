@@ -23,7 +23,7 @@ import com.example.compose_compose.ui.basic.layout.gesture.dragSomething
 import com.example.compose_compose.ui.basic.layout.gesture.interActionDemo
 import com.example.compose_compose.ui.basic.layout.gesture.nestScroll
 import com.example.compose_compose.ui.basic.layout.gesture.testScrollable
-import com.example.compose_compose.ui.layouttab.ComposeLayoutContainer
+import com.example.compose_compose.ui.layouttab.composableContainer
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -71,7 +71,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //            interActionDemo(Modifier)
 //            expandBox(Modifier)
 //            movedBox(Modifier)
-            ComposeLayoutContainer(Modifier)
+            composableContainer(Modifier,2)
         }
         composable("base"){}
         composable("advanced"){}

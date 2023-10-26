@@ -35,6 +35,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.compose_compose.ui.getAllComponents
+import com.example.compose_compose.ui.getAllLayout
+import com.example.compose_compose.ui.getAllLazyLayout
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -53,28 +56,19 @@ import kotlin.math.roundToInt
  *                 }
  *
  * */
-fun someLayoutItems(): MutableList<String> {
 
-    val arr = ArrayList<String>()
-    //pager
-    arr.add("HorizontalPager")
-    arr.add("VerticalPager")
-    //flowlayout
-    arr.add("FlowRow")
-    arr.add("FlowColumn")
-
-    arr.add("Column")
-    arr.add("Row")
-    arr.add("Box")
-    arr.add("Scaffold")
-    return arr
-
-}
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ComposeLayoutContainer(modifier:Modifier) {
+fun composableContainer(modifier:Modifier,type:Int = 1) {
 
-    var items = remember { someLayoutItems().toMutableStateList() }
+    var items: SnapshotStateList<String>? = null
+    when(type){
+        1 ->  items = remember { getAllLayout().toMutableStateList() }
+        2 ->  items = remember { getAllComponents().toMutableStateList() }
+        3 ->  items = remember { getAllLazyLayout().toMutableStateList() }
+        else -> items = remember { getAllLazyLayout().toMutableStateList() }
+    }
+
 
     FlowRow(
         modifier = Modifier.padding(8.dp),
@@ -137,5 +131,5 @@ fun draggableChip(name:String, modifier: Modifier, addItem:()->Unit){
 @Preview
 @Composable
 fun showSomeLayout(){
-    ComposeLayoutContainer(modifier = Modifier)
+    composableContainer(modifier = Modifier,2)
 }
