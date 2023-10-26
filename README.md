@@ -1,2 +1,2 @@
 #compose-compose(final)
-This is compose learning
+Through drag and drop to make composable UI and generate kotlin code

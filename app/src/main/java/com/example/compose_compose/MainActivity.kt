@@ -23,6 +23,7 @@ import com.example.compose_compose.ui.basic.layout.gesture.dragSomething
 import com.example.compose_compose.ui.basic.layout.gesture.interActionDemo
 import com.example.compose_compose.ui.basic.layout.gesture.nestScroll
 import com.example.compose_compose.ui.basic.layout.gesture.testScrollable
+import com.example.compose_compose.ui.layouttab.ComposeLayoutContainer
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // This app draws behind the system bars, so we want to handle fitting system windows
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
 
         setContent {
 
@@ -69,7 +70,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //            dragSomething(modifier = Modifier)
 //            interActionDemo(Modifier)
 //            expandBox(Modifier)
-            movedBox(Modifier)
+//            movedBox(Modifier)
+            ComposeLayoutContainer(Modifier)
         }
         composable("base"){}
         composable("advanced"){}
