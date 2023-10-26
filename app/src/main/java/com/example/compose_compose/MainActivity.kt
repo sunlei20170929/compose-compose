@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -27,7 +28,19 @@ import com.example.compose_compose.ui.theme.ComposecomposeTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
+
+            //屏幕尺寸类别
+//            val windowSizeClass = calculateWindowSizeClass(this)
+
+            //显示特性
+//            val displayFeatures = calculateDisplayFeatures(this)
+
+
             ComposecomposeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
