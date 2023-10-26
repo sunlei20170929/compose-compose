@@ -19,10 +19,12 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -33,6 +35,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
@@ -70,13 +73,11 @@ fun someLayoutItems(): MutableList<String> {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ComposeLayoutContainer(modifier:Modifier) {
-//    LaunchedEffect(key1 = "layout"){
-//        someLayoutItems().asFlow().
-//    }
 
     var items = remember { someLayoutItems().toMutableStateList() }
 
-    FlowRow(modifier = Modifier.padding(8.dp),
+    FlowRow(
+        modifier = Modifier.padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         for(item in items){
             draggableChip(item.toString(),Modifier){
@@ -86,6 +87,7 @@ fun ComposeLayoutContainer(modifier:Modifier) {
         }
 
     }
+
 }
 
 
@@ -95,6 +97,7 @@ fun ComposeLayoutContainer(modifier:Modifier) {
 fun draggableChip(name:String, modifier: Modifier, addItem:()->Unit){
 
     var offset by remember { mutableStateOf(Offset.Zero) }
+    val scope = rememberCoroutineScope()
 
     AssistChip(
         onClick = {    /*TODO*/  },
@@ -120,7 +123,10 @@ fun draggableChip(name:String, modifier: Modifier, addItem:()->Unit){
 
                     },
                     onDragEnd = {
-                        addItem()
+//                        addItem()
+                        scope.launch {
+                            addItem()
+                        }
                         offset = Offset.Zero
                     }
                 )
