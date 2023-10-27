@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,14 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.compose_compose.ui.basic.layout.animate.expandBox
-import com.example.compose_compose.ui.basic.layout.animate.movedBox
-import com.example.compose_compose.ui.basic.layout.component.myScaffold
-import com.example.compose_compose.ui.basic.layout.gesture.basicScroll
-import com.example.compose_compose.ui.basic.layout.gesture.dragSomething
-import com.example.compose_compose.ui.basic.layout.gesture.interActionDemo
-import com.example.compose_compose.ui.basic.layout.gesture.nestScroll
-import com.example.compose_compose.ui.basic.layout.gesture.testScrollable
+import com.example.compose_compose.ui.home.homeContent
 import com.example.compose_compose.ui.layouttab.composableContainer
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
 
@@ -71,7 +63,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //            interActionDemo(Modifier)
 //            expandBox(Modifier)
 //            movedBox(Modifier)
-            composableContainer(Modifier,2)
+//            composableContainer(Modifier,2)
+            homeContent(modifier)
         }
         composable("base"){}
         composable("advanced"){}
