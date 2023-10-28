@@ -3,6 +3,7 @@ package com.example.compose_compose.ui.home
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,10 +16,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -69,11 +75,11 @@ fun dropContent(modifier: Modifier){
         isDroppingItem = isDragging
         isItemInBounds = inBounds
     }) {dragData->
-        val boxColor = if(isDroppingItem && isItemInBounds)
+         val boxColor = if(isDroppingItem && isItemInBounds)
             MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSecondaryContainer
 
-        Canvas(modifier = modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize()) {
             dragData?.let {
                 if (it.type == MimeType.TEXT_PLAIN) {
                     dragText = dragData.data as String
@@ -83,35 +89,46 @@ fun dropContent(modifier: Modifier){
                 }
             }
 
+            DropPaneContent(dragText,dragImage)
+            CloseButton(updateDragText, updateDragImage)
+
         }
 
-        DropPaneContent(null,null)
-        CloseButton(updateDragText, updateDragImage)
+
     }
 }
 
 @Composable
 fun DropPaneContent(dragText: String?, dragImage: Painter?) {
-    if (dragText != null) {
-        Text(
-            text = dragText,
-            textAlign = TextAlign.Center,
-//            style = MaterialTheme.typography.h3,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    } else if (dragImage != null) {
-        Image(
-            painter = dragImage,
-            contentDescription = "",
+
+//    var results: SnapshotStateList<String>? = listOf<String>("").toMutableStateList()
+
+//    val currentColumnState by rememberUpdatedState(newValue = dragText)
+
+    Column {
+
+        if (dragText != null) {
+
+            Text(
+                text = dragText,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        } else if (dragImage != null) {
+            Image(
+                painter = dragImage,
+                contentDescription = "",
 //            modifier = Modifier.clip(Shapes.)
-        )
-    } else {
-        Text(
-            text = "",
-            textAlign = TextAlign.Center,
+            )
+        } else {
+            Text(
+                text = "",
+                textAlign = TextAlign.Center,
 //            style = MaterialTheme.typography.h5
-        )
+            )
+        }
     }
+
 }
 
 // to reset drag and drop

@@ -33,13 +33,13 @@ val tabTitles = listOf("layout","lazylayout","component")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun homeContent(modifier: Modifier){
-    val pagerState = rememberPagerState(0,0f, { 3 })
 
-    val coroutineScope =rememberCoroutineScope()
+    val pagerState = rememberPagerState(0,0f) { 3 }
+
     DragContainer(modifier = Modifier.fillMaxSize()){
         Scaffold() {
             Column(modifier.nestedScroll(rememberNestedScrollInteropConnection())){
-                homeTab(modifier = modifier,pagerState)
+                homeTab(pagerState)
                 homePager(modifier = modifier,pagerState)
                 //result
                 cardResult(modifier)
@@ -51,7 +51,7 @@ fun homeContent(modifier: Modifier){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun homeTab(modifier: Modifier,pagerState:PagerState){
+fun homeTab(pagerState: PagerState){
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -76,7 +76,6 @@ fun homePager(modifier: Modifier,pageState:PagerState){
     HorizontalPager(
         modifier = Modifier,
         state = pageState,
-
     ){index->
         composableContainer(modifier,index)
     }
