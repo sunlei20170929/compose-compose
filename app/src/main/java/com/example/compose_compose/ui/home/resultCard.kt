@@ -1,5 +1,7 @@
 package com.example.compose_compose.ui.home
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CardDefaults
@@ -23,18 +26,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.compose_compose.viewmodel.MainViewModel
+import com.example.compose_compose.viewmodel.TreeNode
 import com.microsoft.device.dualscreen.draganddrop.DropContainer
 import com.microsoft.device.dualscreen.draganddrop.MimeType
+import kotlinx.coroutines.launch
 
 @Composable
 fun cardResult(modifier: Modifier){
@@ -77,11 +87,13 @@ fun dropContent(modifier: Modifier){
         isDroppingItem = isDragging
         isItemInBounds = inBounds
     }) {dragData->
-         val boxColor = if(isDroppingItem && isItemInBounds)
+        val boxColor = if(isDroppingItem && isItemInBounds)
             MaterialTheme.colorScheme.onPrimary
         else MaterialTheme.colorScheme.surface
 
-        Box(modifier = modifier.fillMaxSize().background(color = boxColor)) {
+        Box(modifier = modifier
+            .fillMaxSize()
+            .background(color = boxColor)) {
             dragData?.let {
                 if (it.type == MimeType.TEXT_PLAIN) {
                     dragText = dragData.data as String
@@ -100,39 +112,53 @@ fun dropContent(modifier: Modifier){
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DropPaneContent(dragText: String?, dragImage: Painter?) {
 
-//    var results: SnapshotStateList<String>? = listOf<String>("").toMutableStateList()
-
-//    val currentColumnState by rememberUpdatedState(newValue = dragText)
-
+    val viewModel = hiltViewModel<MainViewModel>()
+    val scope = rememberCoroutineScope()
+    val tree = remember { mutableStateOf(viewModel.tree) }
     Column {
 
         if (dragText != null) {
-
-            Text(
-                text = dragText,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+           LaunchedEffect(key1 = viewModel.tree)  {
+//               val tree = viewModel.tree
+               viewModel.addChild(dragText)
+               Log.e("draw","node num is ${viewModel.childrenCount()?.size}")
+           }
+            viewModel.childrenCount()?.let { drawTree(it) }
         } else if (dragImage != null) {
             Image(
                 painter = dragImage,
                 contentDescription = "",
-//            modifier = Modifier.clip(Shapes.)
             )
         } else {
             Text(
                 text = "",
                 textAlign = TextAlign.Center,
-//            style = MaterialTheme.typography.h5
             )
         }
     }
 
 }
+@Composable
+fun drawTree(nodes:List<TreeNode>){
 
+
+    for(node in nodes){
+        Log.e("draw","node name is ${node.name}")
+        Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(color = Color.Cyan),
+                contentAlignment = Alignment.TopStart,
+                propagateMinConstraints = true
+            ) {
+                Text(text = node.name)
+            }
+    }
+}
 // to reset drag and drop
 @Composable
 fun CloseButton(
@@ -172,7 +198,7 @@ fun showCardresult(){
  * drag and drop step 1
  * fun DragContainer(modifier: Modifier,content:@Composable BoxScope.()->Unit) {
 }
-*/
+ */
 
 /**
  * drag and drop step 2
