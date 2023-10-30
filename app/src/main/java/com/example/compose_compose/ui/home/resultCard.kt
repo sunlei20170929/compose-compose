@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -97,6 +99,7 @@ fun dropContent(modifier: Modifier){
             dragData?.let {
                 if (it.type == MimeType.TEXT_PLAIN) {
                     dragText = dragData.data as String
+                    Log.w("draw","dragtext is $dragText")
                 }
                 if (it.type == MimeType.IMAGE_JPEG) {
                     dragImage = dragData.data as Painter
@@ -117,17 +120,14 @@ fun dropContent(modifier: Modifier){
 fun DropPaneContent(dragText: String?, dragImage: Painter?) {
 
     val viewModel = hiltViewModel<MainViewModel>()
-    val scope = rememberCoroutineScope()
-    val tree = remember { mutableStateOf(viewModel.tree) }
+//    val scope = rememberCoroutineScope()
+//    val tree = remember { mutableStateOf(viewModel.tree) }
     Column {
-
         if (dragText != null) {
-           LaunchedEffect(key1 = viewModel.tree)  {
-//               val tree = viewModel.tree
-               viewModel.addChild(dragText)
-               Log.e("draw","node num is ${viewModel.childrenCount()?.size}")
-           }
-            viewModel.childrenCount()?.let { drawTree(it) }
+            viewModel.addChild(dragText)
+//               tree.value.addChild(dragText!!)
+            Log.e("draw","node num is ${viewModel.childrenCount()?.size}")
+            drawTree()
         } else if (dragImage != null) {
             Image(
                 painter = dragImage,
@@ -143,15 +143,16 @@ fun DropPaneContent(dragText: String?, dragImage: Painter?) {
 
 }
 @Composable
-fun drawTree(nodes:List<TreeNode>){
-
-
-    for(node in nodes){
+fun drawTree(){
+    val viewModel = hiltViewModel<MainViewModel>()
+//    val tree = remember { mutableStateOf(viewModel.tree) }
+    for(node in viewModel.tree.getChildren()){
         Log.e("draw","node name is ${node.name}")
         Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(color = Color.Cyan),
+                    .background(color = Color.Cyan)
+                    .offset(x=5.dp,y=5.dp),
                 contentAlignment = Alignment.TopStart,
                 propagateMinConstraints = true
             ) {
