@@ -19,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import com.example.compose_compose.ui.home.layouttab.composableContainer
+import com.example.compose_compose.viewmodel.MainViewModel
 import com.microsoft.device.dualscreen.draganddrop.DragContainer
 import kotlinx.coroutines.launch
 
@@ -32,7 +34,7 @@ val tabTitles = listOf("layout","lazylayout","component")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun homeContent(modifier: Modifier){
+fun homeContent(modifier: Modifier,vm:MainViewModel?){
 
     val pagerState = rememberPagerState(0,0f) { 3 }
 
@@ -48,6 +50,8 @@ fun homeContent(modifier: Modifier){
     }
 
 }
+
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -83,5 +87,5 @@ fun homePager(modifier: Modifier,pageState:PagerState){
 @Preview
 @Composable
 fun previewHomeContent(){
-    homeContent(modifier = Modifier)
+    homeContent(modifier = Modifier,null)
 }
