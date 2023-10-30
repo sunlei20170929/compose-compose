@@ -63,7 +63,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "myhome"){
         composable("myhome"){
             val viewModel = hiltViewModel<MainViewModel>()
-            homeContent(modifier, viewModel)
+            homeContent(modifier)
         }
         composable("base"){}
         composable("advanced"){}

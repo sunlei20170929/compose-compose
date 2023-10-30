@@ -12,8 +12,8 @@ interface CCDao {
     fun getTrees(): Flow<List<Tree>>
 
 
-    @Query("SELECT * FROM trees WHERE id = :treeid")
-    fun getPlant(plantId: String): Flow<Tree>
+//    @Query("SELECT * FROM trees WHERE id = :treeid")
+//    fun getPlant(plantId: String): Flow<Tree>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTree(tree: Tree)

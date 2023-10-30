@@ -2,6 +2,7 @@ package com.example.compose_compose.ui.home
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -76,10 +78,10 @@ fun dropContent(modifier: Modifier){
         isItemInBounds = inBounds
     }) {dragData->
          val boxColor = if(isDroppingItem && isItemInBounds)
-            MaterialTheme.colorScheme.onPrimaryContainer
-        else MaterialTheme.colorScheme.onSecondaryContainer
+            MaterialTheme.colorScheme.onPrimary
+        else MaterialTheme.colorScheme.surface
 
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize().background(color = boxColor)) {
             dragData?.let {
                 if (it.type == MimeType.TEXT_PLAIN) {
                     dragText = dragData.data as String

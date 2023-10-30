@@ -34,7 +34,7 @@ val tabTitles = listOf("layout","lazylayout","component")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun homeContent(modifier: Modifier,vm:MainViewModel?){
+fun homeContent(modifier: Modifier){
 
     val pagerState = rememberPagerState(0,0f) { 3 }
 
@@ -87,5 +87,5 @@ fun homePager(modifier: Modifier,pageState:PagerState){
 @Preview
 @Composable
 fun previewHomeContent(){
-    homeContent(modifier = Modifier,null)
+    homeContent(modifier = Modifier)
 }
