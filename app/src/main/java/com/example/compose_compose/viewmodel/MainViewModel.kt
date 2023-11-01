@@ -15,8 +15,7 @@ class MainViewModel @Inject constructor(
 
     private val _tree : TreeNode = TreeNode("root")
     val tree: TreeNode = _tree
-    fun addChild(child:String){
-        Log.e("draw","add $child")
+    suspend fun addChild(child:String){
         _tree.addChild(_tree,child)
     }
 
@@ -30,16 +29,16 @@ class MainViewModel @Inject constructor(
 class TreeNode constructor(val name:String){
 
 //    private val root: TreeNode = TreeNode("root")
-    private val children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
+    private val _children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
 
     fun addChild(childName:String){
-        children.add(TreeNode(childName))
+        _children.add(TreeNode(childName))
     }
-    fun getChildren():List<TreeNode> = children
+    var children:List<TreeNode> = _children
 
     fun addChild(parent:TreeNode,childname:String): TreeNode? {
        return parent.apply {
-           this.children?.add(TreeNode(childname))
+           _children?.add(TreeNode(childname))
        }
     }
 
@@ -48,6 +47,6 @@ class TreeNode constructor(val name:String){
     }
 
     fun deleteChild(parent:TreeNode,child:TreeNode){
-        parent.children.remove(child)
+        parent._children.remove(child)
     }
 }
