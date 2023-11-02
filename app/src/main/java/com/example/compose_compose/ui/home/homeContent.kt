@@ -39,6 +39,7 @@ fun homeContent(modifier: Modifier){
     val pagerState = rememberPagerState(0,0f) { 3 }
 
     DragContainer(modifier = Modifier.fillMaxSize()){
+
         Scaffold() {
             Column(modifier.nestedScroll(rememberNestedScrollInteropConnection())){
                 homeTab(pagerState)

@@ -34,12 +34,20 @@ class TreeNode constructor(val name:String){
     fun addChild(childName:String){
         _children.add(TreeNode(childName))
     }
+    fun addSubChild(parent:TreeNode,child:String){
+        parent._children.add(TreeNode(child))
+    }
+
     var children:List<TreeNode> = _children
 
     fun addChild(parent:TreeNode,childname:String): TreeNode? {
        return parent.apply {
            _children?.add(TreeNode(childname))
        }
+    }
+
+    fun removeChild(childname:String){
+        _children.remove(TreeNode(childname))
     }
 
     fun getChildren(parent:TreeNode):List<TreeNode>?{
