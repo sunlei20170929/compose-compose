@@ -22,7 +22,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +41,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.compose_compose.viewmodel.MainViewModel
 import com.example.compose_compose.viewmodel.TreeNode
 import com.microsoft.device.dualscreen.draganddrop.DropContainer
-//import com.microsoft.device.dualscreen.draganddrop.LocalDragState
 import com.microsoft.device.dualscreen.draganddrop.MimeType
 
 @Composable
@@ -59,7 +60,7 @@ fun cardResult(modifier: Modifier){
     }
 }
 
-
+//var LocalisInChild = compositionLocalOf { false }
 @Composable
 fun dropContent(modifier: Modifier){
 
@@ -78,9 +79,7 @@ fun dropContent(modifier: Modifier){
     var isItemInBounds by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<MainViewModel>()
-//    val tree = remember { mutableStateOf(viewModel.tree) }
     val tree = rememberUpdatedState(newValue = viewModel.tree)
-//    val tree = viewModel.tree
 
 
     DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
@@ -90,6 +89,7 @@ fun dropContent(modifier: Modifier){
         val boxColor = if(isDroppingItem && isItemInBounds)
             MaterialTheme.colorScheme.onPrimary
         else MaterialTheme.colorScheme.surface
+
 
         Box(modifier = modifier
             .fillMaxSize()
@@ -107,8 +107,7 @@ fun dropContent(modifier: Modifier){
 
 //            DropPaneContent(dragText,dragImage)
 
-            if(!isDroppingItem && isItemInBounds){
-                isItemInBounds = false
+            if(!isDroppingItem && isItemInBounds && tree.value.children.isEmpty()){
                 LaunchedEffect(key1 = tree) {
                     tree.value.addChild(dragText.toString())
                 }
@@ -150,9 +149,8 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
     var dragText by remember { mutableStateOf<String?>(null) }
 
     var isDroppingItem by remember { mutableStateOf(false) }
-//    var isDroppingItem = false
     var isItemInBounds by remember { mutableStateOf(false) }
-//    var isItemInBounds = false
+
     DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
         isDroppingItem = isDragging
         isItemInBounds = inBounds
@@ -160,9 +158,9 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
         val boxColor = if(isDroppingItem && isItemInBounds)
             MaterialTheme.colorScheme.onPrimary
         else MaterialTheme.colorScheme.surface
+
         Column() {
             for (node in nodes.children) {
-                Log.e("draw", "node name is ${node.name}")
                 Box(modifier = Modifier
                     .background(color = Color.Cyan)
                     .fillMaxWidth()
@@ -173,9 +171,7 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
                             dragText = dragData.data as String
 
                             val subtree = rememberUpdatedState(newValue = nodes)
-//                            val child = remember { mutableStateOf(dragText) }
                             if(isItemInBounds && !isDroppingItem){
-                                isItemInBounds = false
                                 LaunchedEffect(key1 = subtree) { node.addChild(dragText.toString()) }
                                 return@DropContainer
                             }
@@ -183,13 +179,10 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
                     }
 
                 }
-                if(node.children.isNotEmpty() && !isDroppingItem){
-                    Row(modifier.padding(horizontal = 20.dp)){
-                        DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
-//                        CloseButton(updateDragText, updateDragImage)
-                    }
-                }
 
+                Row(modifier.padding(horizontal = 20.dp)){
+                    DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
+                }
             }
         }
     }
