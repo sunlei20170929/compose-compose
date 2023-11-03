@@ -114,12 +114,11 @@ fun dropContent(modifier: Modifier){
                         tree.value.addChild(dragText.toString())
                     }
                 }
-
-
-                DrawTree(modifier, nodes = tree.value)
-                CloseButton(updateDragText, updateDragImage)
             }
+            DrawTree(modifier, nodes = tree.value)
+            CloseButton(updateDragText, updateDragImage)
         }
+
 
 }
 
@@ -182,7 +181,7 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
                                 Log.w("draw","subtree is ${subtree.value.name}")
                                 LaunchedEffect(key1 = nodes) {
 //                                    if(node.children.isEmpty())
-                                    if(subtree.value.name.equals(node.parent) || subtree.value.name.equals("root"))
+//                                    if(subtree.value.name.equals(node.parent) || subtree.value.name.equals("root"))
                                         node.addSubChild(node,dragText.toString())
 //                                    else{
 //                                        只在最低层添加
@@ -192,12 +191,14 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
                             }
                         }
                     }
-                    Row(modifier.padding(horizontal = 20.dp)){
-                        DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
-                    }
+
                 }
             }
+        Row(modifier.padding(horizontal = 20.dp)){
+            DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
         }
+        }
+
     }
 }
 @Preview
