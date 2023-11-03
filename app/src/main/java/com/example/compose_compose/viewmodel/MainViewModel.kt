@@ -13,7 +13,7 @@ class MainViewModel @Inject constructor(
 //    private val repository:CCRepository
 ): ViewModel(){
 
-    private val _tree : TreeNode = TreeNode("root")
+    private val _tree : TreeNode = TreeNode("root",null)
     val tree: TreeNode = _tree
     suspend fun addChild(child:String){
         _tree.addChild(_tree,child)
@@ -26,28 +26,32 @@ class MainViewModel @Inject constructor(
 
 }
 
-class TreeNode constructor(val name:String){
+class TreeNode constructor(val name:String,val parent:String?){
 
 //    private val root: TreeNode = TreeNode("root")
     private val _children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
 
     fun addChild(childName:String){
-        _children.add(TreeNode(childName))
+        _children.add(TreeNode(childName,null))
     }
     fun addSubChild(parent:TreeNode,child:String){
-        parent._children.add(TreeNode(child))
+        parent._children.add(TreeNode(child, parent = parent.name))
     }
 
     var children:List<TreeNode> = _children
 
     fun addChild(parent:TreeNode,childname:String): TreeNode? {
        return parent.apply {
-           _children?.add(TreeNode(childname))
+           _children?.add(TreeNode(childname,this.name))
        }
     }
 
+    fun hasFather(node:TreeNode):Boolean{
+            return true
+    }
+
     fun removeChild(childname:String){
-        _children.remove(TreeNode(childname))
+        _children.remove(TreeNode(childname,null))
     }
 
     fun getChildren(parent:TreeNode):List<TreeNode>?{
