@@ -65,6 +65,7 @@ fun cardResult(modifier: Modifier){
 }
 
 //var LocalisInChild = compositionLocalOf { false }
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun dropContent(modifier: Modifier){
 
@@ -85,39 +86,38 @@ fun dropContent(modifier: Modifier){
     val viewModel = hiltViewModel<MainViewModel>()
     val tree = rememberUpdatedState(newValue = viewModel.tree)
 
-        DropContainer(modifier = modifier, onDrag = { inBounds, isDragging ->
-            isDroppingItem = isDragging
-            isItemInBounds = inBounds
-        }) { dragData ->
-            val boxColor = if (isDroppingItem && isItemInBounds)
-                MaterialTheme.colorScheme.onPrimary
-            else MaterialTheme.colorScheme.surface
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(color = boxColor)
-            )
-            {
-                dragData?.let {
-                    if (it.type == MimeType.TEXT_PLAIN) {
-                        dragText = dragData.data as String
+    DropContainer(modifier = modifier, onDrag = { inBounds, isDragging ->
+        isDroppingItem = isDragging
+        isItemInBounds = inBounds
+    }) { dragData ->
+        val boxColor = if (isDroppingItem && isItemInBounds)
+            MaterialTheme.colorScheme.onPrimary
+        else MaterialTheme.colorScheme.surface
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = boxColor)
+        )
+        {
+            dragData?.let {
+                if (it.type == MimeType.TEXT_PLAIN) {
+                    dragText = dragData.data as String
 
-                    }
-                    if (it.type == MimeType.IMAGE_JPEG) {
-                        dragImage = dragData.data as Painter
-                    }
                 }
-
-                if (!isDroppingItem && isItemInBounds && tree.value.children.isEmpty()) {
-                    LaunchedEffect(key1 = tree) {
-                        Log.e("draw","root add $dragText")
-                        tree.value.addChild(dragText.toString())
-                    }
+                if (it.type == MimeType.IMAGE_JPEG) {
+                    dragImage = dragData.data as Painter
                 }
             }
-            DrawTree(modifier, nodes = tree.value)
-            CloseButton(updateDragText, updateDragImage)
+
+            if (!isDroppingItem && isItemInBounds && tree.value.children.isEmpty()) {
+                LaunchedEffect(key1 = tree) {
+                    tree.value.addChild(dragText.toString())
+                }
+            }
         }
+        DrawTree(modifier, nodes = tree.value)
+        CloseButton(updateDragText, updateDragImage)
+    }
 
 
 }
@@ -125,7 +125,6 @@ fun dropContent(modifier: Modifier){
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DropPaneContent(dragText: String?, dragImage: Painter?) {
-    Log.e("draw","DropPaneContent...DropPaneContent...DropPaneContent...")
 
     Column {
         if (dragText != null) {
@@ -153,50 +152,39 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
     var isDroppingItem by remember { mutableStateOf(false) }
     var isItemInBounds by remember { mutableStateOf(false) }
 
-        val boxColor = if(isDroppingItem && isItemInBounds)
-            MaterialTheme.colorScheme.onPrimary
-        else MaterialTheme.colorScheme.surface
+    val boxColor = if(isDroppingItem && isItemInBounds)
+        MaterialTheme.colorScheme.onPrimary
+    else MaterialTheme.colorScheme.surface
 
-//    if(nodes.children.isEmpty()) return
     Column() {
-    for (node in nodes.children) {
-        DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
-            isDroppingItem = isDragging
-            isItemInBounds = inBounds
+        for (node in nodes.children) {
+            DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
+                isDroppingItem = isDragging
+                isItemInBounds = inBounds
 
-        }) {dragData->
+            }) {dragData->
                 Column(modifier = Modifier
-                    .background(color = Color.Cyan)
+                    .background(color = Color.LightGray)
                     .fillMaxWidth()
                 ) {
                     Text(text = node.name)
-//                    Text(text="tree node")
                     dragData?.let {
                         if (it.type == MimeType.TEXT_PLAIN) {
                             dragText = dragData.data as String
 
                             val subtree = rememberUpdatedState(newValue = nodes)
                             if(isItemInBounds && !isDroppingItem){
-                                Log.e("draw","add node name is ${node.name}")
-                                Log.w("draw","subtree is ${subtree.value.name}")
                                 LaunchedEffect(key1 = nodes) {
-//                                    if(node.children.isEmpty())
-//                                    if(subtree.value.name.equals(node.parent) || subtree.value.name.equals("root"))
-                                        node.addSubChild(node,dragText.toString())
-//                                    else{
-//                                        只在最低层添加
-//                                    }
-
+                                    node.addSubChild(node,dragText.toString())
                                 }
                             }
                         }
                     }
-
                 }
             }
-        Row(modifier.padding(horizontal = 20.dp)){
-            DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
-        }
+            Row(modifier.padding(horizontal = 20.dp)){
+                DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
+            }
         }
 
     }
@@ -209,8 +197,8 @@ fun previewResult(){
 //    val root:TreeNode = TreeNode("root").apply {
 //        children = listOf(TreeNode("child1"),TreeNode("child2"))
 //        children[0].children = subnodes
-////        children[1].children = subnodes
-////        children[0].children[0].children = subsubnodes
+//        children[1].children = subnodes
+//        children[0].children[0].children = subsubnodes
 //        children[0].children[1].children = subsubnodes
 //    }
 
