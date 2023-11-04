@@ -12,12 +12,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -109,10 +114,9 @@ fun dropContent(modifier: Modifier){
                 }
             }
         }
-//        DrawTree(modifier, nodes = tree.value)
-        DrawTree(modifier, nodes = tree.value,reCompose)
-        CloseButton(treeClear) { null }
 
+        DrawTree(modifier, nodes = tree.value,reCompose)
+        CloseButton { treeClear() }
 
     }
 
@@ -161,11 +165,6 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
                 }
             }
             Row(modifier.padding(horizontal = 10.dp)
-//                .pointerInput(Unit){
-//                isNodeItemInBounds = !isNodeItemInBounds
-//            }.graphicsLayer {
-//                alpha = if(isNodeItemInBounds) 0.7f else 1f
-//            }
             ){
                 DrawTree(modifier =Modifier.background(color = boxColor), nodes = node, redraw)
 //                CloseButton(treeClear) { null }
@@ -195,17 +194,21 @@ fun previewResult(){
 // to reset drag and drop
 @Composable
 fun CloseButton(
-    clearTree: () -> Unit,
-    updateDragImage: (Painter?) -> Unit
+    clearTree: () -> Unit
+//    updateDragImage: (Painter?) -> Unit,
 ) {
+
+    val openAlertDialog = remember { mutableStateOf(false) }
+
     Box(
         contentAlignment = Alignment.TopEnd,
         modifier = Modifier.fillMaxSize()
     ) {
         IconButton(
             onClick = {
-                clearTree()
-                updateDragImage(null)
+//                clearTree()
+//                updateDragImage(null)
+                openAlertDialog.value = true
             }
         ) {
             Icon(
@@ -213,6 +216,22 @@ fun CloseButton(
                 imageVector = Icons.Filled.Close,
                 contentDescription = ""
             )
+        }
+
+        when {
+            // ...
+            openAlertDialog.value -> {
+                delTreeAlertDialog(
+                    onDismissRequest = { openAlertDialog.value = false },
+                    onConfirmation = {
+                        openAlertDialog.value = false
+                        clearTree()
+                    },
+                    dialogTitle = "Delete Tree",
+                    dialogText = "Delete all the nodes of the tree.",
+                    icon = Icons.Default.Info
+                )
+            }
         }
     }
 }
@@ -268,3 +287,45 @@ fun showCardresult(){
  *
  * }
  * */
+
+@Composable
+fun delTreeAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
