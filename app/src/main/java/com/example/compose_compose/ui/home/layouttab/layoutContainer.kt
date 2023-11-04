@@ -34,8 +34,8 @@ fun composableContainer(modifier:Modifier,type:Int = 1) {
 
     items = when(type){
         0 -> remember { getAllLayout().toMutableStateList() }
-        1 -> remember { getAllComponents().toMutableStateList() }
-        2 -> remember { getAllLazyLayout().toMutableStateList() }
+        2 -> remember { getAllComponents().toMutableStateList() }
+        1 -> remember { getAllLazyLayout().toMutableStateList() }
         else -> remember { getAllLazyLayout().toMutableStateList() }
     }
 

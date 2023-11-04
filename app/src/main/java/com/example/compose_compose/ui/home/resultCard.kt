@@ -122,7 +122,6 @@ fun dropContent(modifier: Modifier){
 
 @Composable
 fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
-//fun DrawTree(modifier:Modifier,nodes: State<TreeNode>){
 
     var dragText by remember { mutableStateOf<String?>(null) }
     var isDroppingItem by remember { mutableStateOf(false) }
