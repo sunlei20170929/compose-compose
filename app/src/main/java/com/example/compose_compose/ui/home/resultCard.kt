@@ -1,8 +1,6 @@
 package com.example.compose_compose.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,10 +28,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +37,6 @@ import com.example.compose_compose.viewmodel.MainViewModel
 import com.example.compose_compose.viewmodel.TreeNode
 import com.microsoft.device.dualscreen.draganddrop.DropContainer
 import com.microsoft.device.dualscreen.draganddrop.MimeType
-import kotlinx.coroutines.launch
 
 @Composable
 fun cardResult(modifier: Modifier){
@@ -72,6 +65,8 @@ fun dropContent(modifier: Modifier){
     var isDroppingItem by remember { mutableStateOf(false) }
     var isItemInBounds by remember { mutableStateOf(false) }
 
+    var reCompose by remember { mutableStateOf(false) }
+
     val scope = rememberCoroutineScope()
 
     val viewModel = hiltViewModel<MainViewModel>()
@@ -79,9 +74,8 @@ fun dropContent(modifier: Modifier){
 
 
     val treeClear:()->Unit = {
-//        scope.launch {
-            tree.value.clearTree(tree.value)
-//        }
+        tree.value.clearTree(tree.value)
+        reCompose = !reCompose
     }
 
     DropContainer(modifier = modifier, onDrag = { inBounds, isDragging ->
@@ -116,7 +110,7 @@ fun dropContent(modifier: Modifier){
             }
         }
 //        DrawTree(modifier, nodes = tree.value)
-        DrawTree(modifier, nodes = tree.value)
+        DrawTree(modifier, nodes = tree.value,reCompose)
         CloseButton(treeClear) { null }
 
 
@@ -126,18 +120,16 @@ fun dropContent(modifier: Modifier){
 }
 
 @Composable
-fun DrawTree(modifier:Modifier,nodes: TreeNode){
+fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
 //fun DrawTree(modifier:Modifier,nodes: State<TreeNode>){
 
     var dragText by remember { mutableStateOf<String?>(null) }
     var isDroppingItem by remember { mutableStateOf(false) }
     var isItemInBounds by remember { mutableStateOf(false) }
-    var isNodeItemInBounds by remember { mutableStateOf(false) }
-
 
 //    val treenode by remember { mutableStateOf(nodes) }
 
-    val boxColor = if(isDroppingItem && isItemInBounds)
+    val boxColor = if(isDroppingItem && isItemInBounds && redraw)
         MaterialTheme.colorScheme.onPrimary
     else MaterialTheme.colorScheme.surface
 
@@ -160,7 +152,7 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
 
                             val subtree = rememberUpdatedState(newValue = nodes)
                             if(isItemInBounds && !isDroppingItem){
-                                LaunchedEffect(key1 = subtree) {
+                                LaunchedEffect(key1 = Unit) {
                                     node.addSubChild(node,dragText.toString())
                                 }
                             }
@@ -175,7 +167,7 @@ fun DrawTree(modifier:Modifier,nodes: TreeNode){
 //                alpha = if(isNodeItemInBounds) 0.7f else 1f
 //            }
             ){
-                DrawTree(modifier=Modifier.background(color = boxColor), nodes = node)
+                DrawTree(modifier =Modifier.background(color = boxColor), nodes = node, redraw)
 //                CloseButton(treeClear) { null }
             }
         }
@@ -195,7 +187,9 @@ fun previewResult(){
         children[1].children[1].children = subsubnodes
     }
 
-    DrawTree(Modifier,nodes = root)
+    val tmp = remember { mutableStateOf(false) }
+
+    DrawTree(Modifier, nodes = root,false)
 }
 
 // to reset drag and drop
