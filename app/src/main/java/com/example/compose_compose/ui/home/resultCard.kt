@@ -56,7 +56,6 @@ fun cardResult(modifier: Modifier){
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
         )
-
         dropContent(modifier)
     }
 }
@@ -71,8 +70,6 @@ fun dropContent(modifier: Modifier){
     var isItemInBounds by remember { mutableStateOf(false) }
 
     var reCompose by remember { mutableStateOf(false) }
-
-    val scope = rememberCoroutineScope()
 
     val viewModel = hiltViewModel<MainViewModel>()
     val tree = rememberUpdatedState(newValue = viewModel.tree)
@@ -131,14 +128,11 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
     var isDroppingItem by remember { mutableStateOf(false) }
     var isItemInBounds by remember { mutableStateOf(false) }
 
-//    val treenode by remember { mutableStateOf(nodes) }
-
     val boxColor = if(isDroppingItem && isItemInBounds && redraw)
         MaterialTheme.colorScheme.onPrimary
     else MaterialTheme.colorScheme.surface
 
     Column {
-//        for (node in nodes.children) {
         for (node in nodes.children) {
             DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
                 isDroppingItem = isDragging
@@ -167,10 +161,47 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
             Row(modifier.padding(horizontal = 10.dp)
             ){
                 DrawTree(modifier =Modifier.background(color = boxColor), nodes = node, redraw)
-//                CloseButton(treeClear) { null }
             }
         }
 
+    }
+}
+
+@Composable
+fun CloseButton(
+    clearTree: () -> Unit
+) {
+    val openAlertDialog = remember { mutableStateOf(false) }
+
+    Box(
+        contentAlignment = Alignment.TopEnd,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        IconButton(
+            onClick = {
+                openAlertDialog.value = true
+            }
+        ) {
+            Icon(
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                imageVector = Icons.Filled.Close,
+                contentDescription = ""
+            )
+        }
+        when {
+            openAlertDialog.value -> {
+                delTreeAlertDialog(
+                    onDismissRequest = { openAlertDialog.value = false },
+                    onConfirmation = {
+                        openAlertDialog.value = false
+                        clearTree()
+                    },
+                    dialogTitle = "Delete Tree",
+                    dialogText = "Delete all the nodes of the tree.",
+                    icon = Icons.Default.Info
+                )
+            }
+        }
     }
 }
 @Preview
@@ -192,140 +223,10 @@ fun previewResult(){
 }
 
 // to reset drag and drop
-@Composable
-fun CloseButton(
-    clearTree: () -> Unit
-//    updateDragImage: (Painter?) -> Unit,
-) {
 
-    val openAlertDialog = remember { mutableStateOf(false) }
-
-    Box(
-        contentAlignment = Alignment.TopEnd,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        IconButton(
-            onClick = {
-//                clearTree()
-//                updateDragImage(null)
-                openAlertDialog.value = true
-            }
-        ) {
-            Icon(
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                imageVector = Icons.Filled.Close,
-                contentDescription = ""
-            )
-        }
-
-        when {
-            // ...
-            openAlertDialog.value -> {
-                delTreeAlertDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    onConfirmation = {
-                        openAlertDialog.value = false
-                        clearTree()
-                    },
-                    dialogTitle = "Delete Tree",
-                    dialogText = "Delete all the nodes of the tree.",
-                    icon = Icons.Default.Info
-                )
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
 fun showCardresult(){
 //    cardResult(modifier = Modifier)
-}
-
-
-/*******************************************************************/
-/*****************        Drag and Drop           ******************/
-/*******************************************************************/
-/**
- * drag and drop step 1
- * fun DragContainer(modifier: Modifier,content:@Composable BoxScope.()->Unit) {
-}
- */
-
-/**
- * drag and drop step 2
- * Define  DragData and DragType
- *
- *
- * class DragData(val type: MimeType = MimeType.TEXT_PLAIN, val data:Any? = null)
- *
- * enum class DragType(val valuse:String){
- *     COMPONENT("compose component"),
- *     LAYOUT("compose layout"),
- *     LAZYLAYOUT("lazy layout")
- * }
- * */
-
-/**
- * drag and drop step 3
- * fun DropTarget()
- *
- * @Composable
- * fun DragTarget(dragData:DragData,content:@Composable ()->Unit) {
- * }
- * */
-
-
-/**
- * drag and drop step 4:
- * fun DropContainer()
- *
- * @Composable
- * fun DropContainer(modifier: Modifier,
- *                   onDrag:()->Unit,
- *                   content:@Composable BoxScope.(data:DragData?)->Unit){
- *
- * }
- * */
-
-@Composable
-fun delTreeAlertDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector,
-) {
-    AlertDialog(
-        icon = {
-            Icon(icon, contentDescription = "Example Icon")
-        },
-        title = {
-            Text(text = dialogTitle)
-        },
-        text = {
-            Text(text = dialogText)
-        },
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
-                Text("Confirm")
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
-                Text("Dismiss")
-            }
-        }
-    )
 }
