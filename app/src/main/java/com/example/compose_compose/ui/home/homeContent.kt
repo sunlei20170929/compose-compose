@@ -40,6 +40,8 @@ fun homeContent(modifier: Modifier){
 
     DragContainer(modifier = Modifier.fillMaxSize()){
 
+        //DragContainer‘s parameter content
+        //accord state draw a graphic on the screen
         Scaffold() {
             Column(modifier.nestedScroll(rememberNestedScrollInteropConnection())){
                 homeTab(pagerState)

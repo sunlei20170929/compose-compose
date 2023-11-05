@@ -15,13 +15,14 @@ fun getAllLayout(): MutableList<String> {
 }
 fun getAllComponents(): MutableList<String> {
     val componetNames = listOf(
-        "Filled Button","tonal Button","Outlined Button","Text Button",
-        "FAB","Small FAB","Large FAB","Extend FAB",
-        "Assit Chip","Filter Chip","Input Chip","Suggestion Chip",
+//        "Filled Button","tonal Button","Outlined Button","Text Button",
+        "Button",
+        "FAB",
+//        "Small FAB","Large FAB","Extend FAB",
+//        "Assit Chip","Filter Chip","Input Chip","Suggestion Chip",
+        "Chip",
         "LinearProgressIndicator","CircularProgressIndicator",
-        "Slider",
-        "Switch",
-        "ModalBottomSheet",
+        "Slider",   "Switch",       "ModalBottomSheet",
         "ModalNavigationDrawer",
     )
     return componetNames.toMutableList()

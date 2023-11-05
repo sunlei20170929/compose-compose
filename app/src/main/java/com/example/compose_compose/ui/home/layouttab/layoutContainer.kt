@@ -33,9 +33,9 @@ fun composableContainer(modifier:Modifier,type:Int = 1) {
     var items: SnapshotStateList<String>? = null
 
     items = when(type){
-        1 -> remember { getAllLayout().toMutableStateList() }
+        0 -> remember { getAllLayout().toMutableStateList() }
         2 -> remember { getAllComponents().toMutableStateList() }
-        3 -> remember { getAllLazyLayout().toMutableStateList() }
+        1 -> remember { getAllLazyLayout().toMutableStateList() }
         else -> remember { getAllLazyLayout().toMutableStateList() }
     }
 
@@ -57,6 +57,7 @@ fun draggableChip(name: String){
 
     val dragData = DragData(type = MimeType.TEXT_PLAIN,data = name)
 
+    //handle detectDragGesturesAfterLongPress event
     DragTarget(dragData = dragData) {
         AssistChip(
             onClick = { null },
