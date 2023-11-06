@@ -1,5 +1,6 @@
 package com.example.compose_compose.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
@@ -72,7 +74,8 @@ fun dropContent(modifier: Modifier){
     var reCompose by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<MainViewModel>()
-    val tree = rememberUpdatedState(newValue = viewModel.tree)
+//    val tree = rememberUpdatedState(newValue = viewModel.tree)
+    val tree = remember {mutableStateOf(viewModel.tree)}
 
 
     val treeClear:()->Unit = {
@@ -80,7 +83,11 @@ fun dropContent(modifier: Modifier){
         reCompose = !reCompose
     }
 
-    DropContainer(modifier = modifier, onDrag = { inBounds, isDragging ->
+    val saveTree:()->Unit = {
+
+    }
+
+    DropContainer(modifier = modifier.verticalScroll(rememberScrollState()), onDrag = { inBounds, isDragging ->
         isDroppingItem = isDragging
         isItemInBounds = inBounds
     }) { dragData ->
@@ -92,7 +99,7 @@ fun dropContent(modifier: Modifier){
                 .fillMaxSize()
                 .height(120.dp)
                 .background(color = boxColor)
-                .verticalScroll(rememberScrollState())
+//                .verticalScroll(rememberScrollState())
         )
         {
             dragData?.let {
@@ -107,13 +114,14 @@ fun dropContent(modifier: Modifier){
 
             if (!isDroppingItem && isItemInBounds && tree.value.children.isEmpty()) {
                 LaunchedEffect(key1 = tree) {
+                    Log.e("draw","tree addchild $dragText")
                     tree.value.addChild(dragText.toString())
                 }
             }
         }
 
         DrawTree(modifier, nodes = tree.value,reCompose)
-        CloseButton { treeClear() }
+        CloseButton ({ treeClear() }, { saveTree() })
 
     }
 
@@ -150,6 +158,7 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
                             val subtree = rememberUpdatedState(newValue = nodes)
                             if(isItemInBounds && !isDroppingItem){
                                 LaunchedEffect(key1 = Unit) {
+                                    Log.e("draw","${node.name} addsubchild $dragText")
                                     node.addSubChild(node,dragText.toString())
                                 }
                             }
@@ -168,40 +177,69 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
 
 @Composable
 fun CloseButton(
-    clearTree: () -> Unit
+    clearTree: () -> Unit,
+    saveTree:()->Unit,
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
+    val openSaveDialog = remember { mutableStateOf(false) }
 
     Box(
         contentAlignment = Alignment.TopEnd,
         modifier = Modifier.fillMaxSize()
     ) {
-        IconButton(
-            onClick = {
-                openAlertDialog.value = true
+        Row {
+            IconButton(onClick = { openSaveDialog.value = true }) {
+                Icon(tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    imageVector = Icons.Filled.Done,
+                    contentDescription="save")
             }
-        ) {
-            Icon(
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                imageVector = Icons.Filled.Close,
-                contentDescription = ""
-            )
-        }
-        when {
-            openAlertDialog.value -> {
-                delTreeAlertDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    onConfirmation = {
-                        openAlertDialog.value = false
-                        clearTree()
-                    },
-                    dialogTitle = "Delete Tree",
-                    dialogText = "Delete all the nodes of the tree.",
-                    icon = Icons.Default.Info
+            IconButton(
+                onClick = {
+                    openAlertDialog.value = true
+                }
+            ) {
+                Icon(
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = ""
                 )
             }
+            when {
+                openAlertDialog.value -> {
+                    delTreeAlertDialog(
+                        onDismissRequest = { openAlertDialog.value = false },
+                        onConfirmation = {
+                            openAlertDialog.value = false
+                            clearTree()
+                        },
+                        dialogTitle = "Delete Tree",
+                        dialogText = "Delete all the nodes of the tree.",
+                        icon = Icons.Default.Info
+                    )
+                }
+            }
+
+            when
+            {
+                openSaveDialog.value ->{
+                    saveTreeDialog(
+                    onDismissRequest = { openSaveDialog.value = false },
+                    onConfirmation = {
+                        openSaveDialog.value = false
+                        saveTree()
+                    },
+                        onInputChanged = {}
+
+                    )
+                }
+            }
         }
+
     }
+}
+
+fun saveTree(){
+
 }
 @Preview
 @Composable
