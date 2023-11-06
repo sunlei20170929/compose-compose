@@ -4,8 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONArray
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,12 +18,11 @@ class MainViewModel @Inject constructor(
 
     private val _tree : TreeNode = TreeNode("root",null)
     val tree: TreeNode = _tree
-    suspend fun addChild(child:String){
-        _tree.addChild(_tree,child)
-    }
 
-    fun childrenCount(): List<TreeNode>? {
-        return _tree.getChildren(_tree)
+    fun saveTreetoJSON(){
+       val gson = Gson()
+        val savetree = gson.toJson(_tree)
+        Log.w("draw","saved json string is $savetree")
     }
 
 

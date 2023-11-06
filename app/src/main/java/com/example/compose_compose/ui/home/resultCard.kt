@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -84,7 +85,7 @@ fun dropContent(modifier: Modifier){
     }
 
     val saveTree:()->Unit = {
-
+        viewModel.saveTreetoJSON()
     }
 
     DropContainer(modifier = modifier.verticalScroll(rememberScrollState()), onDrag = { inBounds, isDragging ->
@@ -98,7 +99,7 @@ fun dropContent(modifier: Modifier){
             modifier = modifier
                 .fillMaxSize()
                 .height(120.dp)
-                .background(color = boxColor)
+                .background(color = Color.Magenta)
 //                .verticalScroll(rememberScrollState())
         )
         {
@@ -168,7 +169,7 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
             }
             Row(modifier.padding(horizontal = 10.dp)
             ){
-                DrawTree(modifier =Modifier.background(color = boxColor), nodes = node, redraw)
+                DrawTree(modifier =Modifier.background(color = Color.Blue), nodes = node, redraw)
             }
         }
 
