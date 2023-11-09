@@ -55,7 +55,7 @@ fun cardResult(modifier: Modifier){
             .fillMaxSize()
     ) {
         Text(
-            text = "Drag component below:(drop within its parent area)",
+            text = "Drag component below:\n(drop within its parent area)",
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
         )
@@ -84,8 +84,8 @@ fun dropContent(modifier: Modifier){
         reCompose = !reCompose
     }
 
-    val saveTree:()->Unit = {
-        viewModel.saveTreetoJSON()
+    val saveTree:(String)->Unit = {
+        viewModel.saveTreetoJSON(it)
     }
 
     DropContainer(modifier = modifier.verticalScroll(rememberScrollState()), onDrag = { inBounds, isDragging ->
@@ -122,7 +122,7 @@ fun dropContent(modifier: Modifier){
         }
 
         DrawTree(modifier, nodes = tree.value,reCompose)
-        CloseButton ({ treeClear() }, { saveTree() })
+        CloseButton ({ treeClear() }, { saveTree(fileName) })
 
     }
 
@@ -175,14 +175,15 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
 
     }
 }
-
+var fileName:String = ""
 @Composable
 fun CloseButton(
     clearTree: () -> Unit,
-    saveTree:()->Unit,
+    saveTree:(String)->Unit,
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
     val openSaveDialog = remember { mutableStateOf(false) }
+
 
     Box(
         contentAlignment = Alignment.TopEnd,
@@ -227,9 +228,11 @@ fun CloseButton(
                     onDismissRequest = { openSaveDialog.value = false },
                     onConfirmation = {
                         openSaveDialog.value = false
-                        saveTree()
+                        saveTree(fileName)
                     },
-                        onInputChanged = {}
+                        onInputChanged = {
+                            fileName = it
+                        }
 
                     )
                 }

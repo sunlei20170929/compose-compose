@@ -1,12 +1,19 @@
 package com.example.compose_compose.viewmodel
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
@@ -14,15 +21,23 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
 //    private val repository:CCRepository
-): ViewModel(){
+    application:Application
+): AndroidViewModel(application){
 
     private val _tree : TreeNode = TreeNode("root",null)
     val tree: TreeNode = _tree
 
-    fun saveTreetoJSON(){
-       val gson = Gson()
-        val savetree = gson.toJson(_tree)
-        Log.w("draw","saved json string is $savetree")
+    fun saveTreetoJSON( filename:String){
+        viewModelScope.launch(Dispatchers.IO){
+            val gson = Gson()
+            val savetree = gson.toJson(_tree)
+
+            getApplication<Application>().applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
+                it.write(savetree.toByteArray())
+            }
+
+        }
+
     }
 
 
@@ -30,7 +45,7 @@ class MainViewModel @Inject constructor(
 
 class TreeNode constructor(val name:String,val parent:String?){
 
-//    private val root: TreeNode = TreeNode("root")
+    //    private val root: TreeNode = TreeNode("root")
     private var _children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
 
     fun addChild(childName:String){
@@ -43,9 +58,9 @@ class TreeNode constructor(val name:String,val parent:String?){
     var children:List<TreeNode> = _children
 
     fun addChild(parent:TreeNode,childname:String): TreeNode? {
-       return parent.apply {
-           _children?.add(TreeNode(childname,this.name))
-       }
+        return parent.apply {
+            _children?.add(TreeNode(childname,this.name))
+        }
     }
 
     fun clearTree(node:TreeNode){
@@ -54,7 +69,7 @@ class TreeNode constructor(val name:String,val parent:String?){
     }
 
     fun hasFather(node:TreeNode):Boolean{
-            return true
+        return true
     }
 
     fun removeChild(childname:String){
