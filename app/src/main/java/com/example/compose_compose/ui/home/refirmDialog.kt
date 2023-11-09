@@ -1,6 +1,7 @@
 package com.example.compose_compose.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -25,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -116,6 +119,7 @@ fun saveTreeDialog(
 //                        .height(160.dp)
 //                )
                 BasicTextField(
+                    modifier = Modifier.border(1.dp, Color.Gray, RectangleShape),
                     value = textFieldState,
                     onValueChange = {
                         textFieldState = it
@@ -139,6 +143,7 @@ fun saveTreeDialog(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     TextButton(
+
                         onClick = { onDismissRequest() },
                         modifier = Modifier.padding(8.dp),
                     ) {
