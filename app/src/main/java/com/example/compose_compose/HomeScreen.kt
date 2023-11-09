@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose_compose.ui.home.homeContent
-import com.example.compose_compose.ui.home.homeDrawer
 
 
 val BottomSheetShape = RoundedCornerShape(
@@ -28,7 +27,7 @@ fun HomeScreen(modifier: Modifier){
         modifier = Modifier.statusBarsPadding(),
 
     ){
-        homeContent(Modifier)
+        homeContent(Modifier,{})
     }
 }
 

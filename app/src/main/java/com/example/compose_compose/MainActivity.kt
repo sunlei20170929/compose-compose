@@ -8,18 +8,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.compose_compose.ui.home.homeContent
 import com.example.compose_compose.ui.theme.ComposecomposeTheme
+import com.example.compose_compose.ui.widget.WidgetScreen
 import com.example.compose_compose.viewmodel.MainViewModel
+import com.example.compose_compose.viewmodel.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,10 +65,17 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "myhome"){
         composable("myhome"){
             val viewModel = hiltViewModel<MainViewModel>()
-            homeContent(modifier)
+            homeContent(modifier, gotoScreen = {target->
+                navController.navigate(target)
+            })
         }
-        composable("base"){}
-        composable("advanced"){}
+        composable("widgetlist"){
+            val parentEntry = remember(it) { navController.getBackStackEntry("myhome")}
+            val widgetViewModel = hiltViewModel<WidgetViewModel>()
+            WidgetScreen(onBackPressed = { navController.popBackStack()},widgetViewModel)
+
+        }
+
 
         //nested navigation
         navigation(startDestination = "nestedgraph",route = "submodule"){
@@ -75,6 +84,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 
 }
+
 
 @Preview(showBackground = true)
 @Composable

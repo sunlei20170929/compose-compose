@@ -55,7 +55,7 @@ fun cardResult(modifier: Modifier){
             .fillMaxSize()
     ) {
         Text(
-            text = "Drag component below:",
+            text = "Drag component below:(drop within its parent area)",
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
         )
@@ -99,7 +99,7 @@ fun dropContent(modifier: Modifier){
             modifier = modifier
                 .fillMaxSize()
                 .height(120.dp)
-                .background(color = Color.Magenta)
+                .background(color = boxColor)
 //                .verticalScroll(rememberScrollState())
         )
         {
@@ -266,5 +266,5 @@ fun previewResult(){
 @Preview
 @Composable
 fun showCardresult(){
-//    cardResult(modifier = Modifier)
+    cardResult(modifier = Modifier)
 }
