@@ -42,6 +42,9 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
 
     }
 
-
+    fun delete(name:String){
+        val file = File(name)
+        file.delete()
+    }
 
 }
