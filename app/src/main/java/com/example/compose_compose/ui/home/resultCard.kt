@@ -113,7 +113,7 @@ fun dropContent(modifier: Modifier){
                 }
             }
 
-            if (!isDroppingItem && isItemInBounds && tree.value.children.isEmpty()) {
+            if (!isDroppingItem && isItemInBounds && tree.value._children.isEmpty()) {
                 LaunchedEffect(key1 = tree) {
                     Log.e("draw","tree addchild $dragText")
                     tree.value.addChild(dragText.toString())
@@ -141,7 +141,7 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
     else MaterialTheme.colorScheme.surface
 
     Column {
-        for (node in nodes.children) {
+        for (node in nodes._children) {
             DropContainer(modifier = modifier, onDrag = {inBounds,isDragging->
                 isDroppingItem = isDragging
                 isItemInBounds = inBounds
@@ -251,11 +251,11 @@ fun previewResult(){
     val subsubnodes = listOf(TreeNode("sub-sub-child1","sub-child2"),TreeNode("sub-sub-child2","sub-child2"))
     val subnodes = listOf(TreeNode("sub-child1","child1"),TreeNode("sub-child2","child1"))
     val root:TreeNode = TreeNode("root",null).apply {
-        children = listOf(TreeNode("child1","root"),TreeNode("child2","root"))
-        children[1].children = subnodes
+        _children = listOf(TreeNode("child1","root"),TreeNode("child2","root")).toMutableList()
+        _children[1]._children = subnodes.toMutableList()
 //        children[1].children = subnodes
-        children[1].children[0].children = subsubnodes
-        children[1].children[1].children = subsubnodes
+        _children[1]._children[0]._children = subsubnodes.toMutableList()
+        _children[1]._children[1]._children = subsubnodes.toMutableList()
     }
 
     val tmp = remember { mutableStateOf(false) }

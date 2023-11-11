@@ -76,7 +76,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         }
 
-
         //nested navigation
         navigation(startDestination = "nestedgraph",route = "submodule"){
             composable(route="subhome"){}

@@ -31,22 +31,18 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO){
             val gson = Gson()
             val savetree = gson.toJson(_tree)
-
+Log.w("draw","json tree is $savetree")
             getApplication<Application>().applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
                 it.write(savetree.toByteArray())
             }
-
         }
-
     }
-
-
 }
 
 class TreeNode constructor(val name:String,val parent:String?){
 
     //    private val root: TreeNode = TreeNode("root")
-    private var _children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
+    var _children:MutableList<TreeNode> = listOf<TreeNode>().toMutableList()
 
     fun addChild(childName:String){
         _children.add(TreeNode(childName,null))
@@ -55,7 +51,7 @@ class TreeNode constructor(val name:String,val parent:String?){
         parent._children.add(TreeNode(child, parent = parent.name))
     }
 
-    var children:List<TreeNode> = _children
+//    var children:List<TreeNode> = _children
 
     fun addChild(parent:TreeNode,childname:String): TreeNode? {
         return parent.apply {
@@ -77,7 +73,7 @@ class TreeNode constructor(val name:String,val parent:String?){
     }
 
     fun getChildren(parent:TreeNode):List<TreeNode>?{
-        return parent.children
+        return parent._children
     }
 
     fun deleteChild(parent:TreeNode,child:TreeNode){

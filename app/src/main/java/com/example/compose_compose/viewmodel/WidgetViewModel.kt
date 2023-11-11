@@ -43,8 +43,14 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
     }
 
     fun delete(name:String){
-        val file = File(name)
-        file.delete()
+        context.fileList().forEach {
+            if(it.equals(name)){
+                Log.e("draw","$name founded")
+                context.deleteFile(name)
+                Log.e("draw","delete......")
+            }
+        }
+        getFileList()
     }
 
 }

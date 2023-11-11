@@ -1,6 +1,8 @@
 package com.example.compose_compose.ui.widget
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,11 +33,20 @@ fun WidgetScreen(onBackPressed:()->Unit,
 
     }
 
-    LazyColumn{
-        items(source,key={ source.iterator()}){ composeFile ->
-            itemContent(Modifier,composeFile,{deleteFile(composeFile)},{showFileCode(composeFile)})
+    if(source.isEmpty()){
+
+        Box(modifier = Modifier.fillMaxSize()){
+            Text("There is no saved widget")
+        }
+    }else{
+        LazyColumn{
+            items(source){ composeFile ->
+                itemContent(Modifier,composeFile,{deleteFile(composeFile)},{showFileCode(composeFile)})
+            }
         }
     }
+
+
 }
 
 @Composable
@@ -43,7 +54,7 @@ fun itemContent(modifier:Modifier, fname:String, delete:((String)-> Unit)?,showC
     Row(modifier = modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically){
         Text(modifier = Modifier
             .weight(1f)
-            .padding(start=16.dp)
+            .padding(start = 16.dp)
             .wrapContentWidth(Alignment.Start),
             text = fname)
         Button(onClick = {
@@ -59,7 +70,8 @@ fun itemContent(modifier:Modifier, fname:String, delete:((String)-> Unit)?,showC
             .wrapContentWidth(Alignment.End),
             onClick = {
                 if (showCode != null) {
-                    showCode(fname)
+//                    showCode(fname)
+
                 }
             }){
             Text(text="Generate Code")
@@ -73,3 +85,9 @@ fun previewItem(){
     itemContent(modifier = Modifier, fname = "filename",null,null)
 }
 
+@Composable
+fun showCodeScreen(filename:String){
+    Box(modifier = Modifier.fillMaxSize()){
+
+    }
+}
