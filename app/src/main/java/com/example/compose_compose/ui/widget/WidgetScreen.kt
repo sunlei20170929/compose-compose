@@ -19,8 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose_compose.viewmodel.WidgetViewModel
 
 @Composable
-fun WidgetScreen(onBackPressed:()->Unit,
-                 vm: WidgetViewModel
+fun WidgetScreen(onBackPressed:()->Unit,vm: WidgetViewModel
 ){
 
     val source by vm.files.collectAsState()
@@ -30,11 +29,10 @@ fun WidgetScreen(onBackPressed:()->Unit,
     }
 
     val showFileCode:(String)->Unit = {
-
+        vm.generateTreeCode(it)
     }
 
     if(source.isEmpty()){
-
         Box(modifier = Modifier.fillMaxSize()){
             Text("There is no saved widget")
         }
@@ -70,8 +68,7 @@ fun itemContent(modifier:Modifier, fname:String, delete:((String)-> Unit)?,showC
             .wrapContentWidth(Alignment.End),
             onClick = {
                 if (showCode != null) {
-//                    showCode(fname)
-
+                    showCode(fname)
                 }
             }){
             Text(text="Generate Code")

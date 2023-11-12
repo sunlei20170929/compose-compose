@@ -3,14 +3,17 @@ package com.example.compose_compose.viewmodel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.Stack
 import javax.inject.Inject
@@ -28,7 +31,9 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
     val files: StateFlow<List<String>> = _files.asStateFlow()
 
     init{
-         getFileList()
+        getFileList()
+        codeStringBuilder.clear()
+        travelStack.clear()
     }
     private fun getFileList(){
         viewModelScope.launch {
@@ -52,35 +57,38 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
         getFileList()
     }
 
-    fun stackPush(nodename:String){
+    private fun stackPush(nodename:String){
         travelStack.push(nodename)
     }
 
-    fun stackPop():String{
+    private fun stackPop():String{
         return if(!travelStack.empty()){
             return travelStack.pop()
-//            return "}"
         }
         else
-            "EOS" //end of stack
+            "}" //end of stack
     }
 
-    fun addNode(node:String){
+    private fun addNode(node:String){
         codeStringBuilder.append("$node(){\n")
     }
 
-    fun addBrace(){
+    private fun addBrace(){
         codeStringBuilder.append("\n"+"}"+"\n")
     }
 
-    fun openFiletoJSON(filename: String): JSONObject {
-        context.openFileInput(filename).bufferedReader().useLines {
-            codeStringBuilder.append(it)
+    private fun openFiletoJSON(filename: String): JSONObject {
+        context.openFileInput(filename).bufferedReader().useLines {line->
+            line.forEach{
+                codeStringBuilder.append(it)
+            }
         }
-        return JSONObject(codeStringBuilder.toString())
+        val fileContent = codeStringBuilder.toString()
+        codeStringBuilder.clear()
+        return JSONObject(fileContent)
     }
 
-    fun fromJsonToTree(json:JSONObject):TreeNode{
+    private fun fromJsonToTree(json:JSONObject):TreeNode{
         val gson = Gson()
         return gson.fromJson(json.toString(),TreeNode::class.java)
     }
@@ -88,7 +96,39 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
     /**
      * travel the tree to generate code
      * */
-    fun travelTree(tree:TreeNode){
+    private fun travelTree(tree:TreeNode){
+        if(tree._children.size>0){
+            val nodes = tree._children
+            for(node in nodes){
+                stackPush(node.name)
+                if(node._children.isEmpty()){
+                    addNode(node.name)
+                    addBrace()
+                }else{
+                    addNode("\t${node.name}(){\n")
+                    travelTree(node)
+                }
+            }
+        }
+    }
+
+    fun generateTreeCode(filename:String){
+        viewModelScope.launch {
+            withContext(Dispatchers.Default){
+                //clear all temp container
+                codeStringBuilder.clear()
+                travelStack.clear()
+                //read data
+                val tree = fromJsonToTree(openFiletoJSON(filename))
+                //travel
+                travelTree(tree)
+                while(travelStack.isNotEmpty()){
+                    stackPop()
+                }
+                val code = codeStringBuilder.toString()
+                Log.e("draw","code:\n$code")
+            }
+        }
 
     }
 
