@@ -1,26 +1,27 @@
 package com.example.compose_compose.viewmodel
 
+import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
+import org.json.JSONObject
+import java.util.Stack
 import javax.inject.Inject
 
 @HiltViewModel
 class WidgetViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
 
-    val context = application.applicationContext
+    @SuppressLint("StaticFieldLeak")
+    val context: Context = application.applicationContext
+    private val travelStack = Stack<String>()
+    private val codeStringBuilder = StringBuilder()
 
     private val _files = MutableStateFlow<List<String>>(emptyList())
 
@@ -45,12 +46,50 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
     fun delete(name:String){
         context.fileList().forEach {
             if(it.equals(name)){
-                Log.e("draw","$name founded")
                 context.deleteFile(name)
-                Log.e("draw","delete......")
             }
         }
         getFileList()
+    }
+
+    fun stackPush(nodename:String){
+        travelStack.push(nodename)
+    }
+
+    fun stackPop():String{
+        return if(!travelStack.empty()){
+            return travelStack.pop()
+//            return "}"
+        }
+        else
+            "EOS" //end of stack
+    }
+
+    fun addNode(node:String){
+        codeStringBuilder.append("$node(){\n")
+    }
+
+    fun addBrace(){
+        codeStringBuilder.append("\n"+"}"+"\n")
+    }
+
+    fun openFiletoJSON(filename: String): JSONObject {
+        context.openFileInput(filename).bufferedReader().useLines {
+            codeStringBuilder.append(it)
+        }
+        return JSONObject(codeStringBuilder.toString())
+    }
+
+    fun fromJsonToTree(json:JSONObject):TreeNode{
+        val gson = Gson()
+        return gson.fromJson(json.toString(),TreeNode::class.java)
+    }
+
+    /**
+     * travel the tree to generate code
+     * */
+    fun travelTree(tree:TreeNode){
+
     }
 
 }

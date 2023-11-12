@@ -31,7 +31,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO){
             val gson = Gson()
             val savetree = gson.toJson(_tree)
-Log.w("draw","json tree is $savetree")
+
             getApplication<Application>().applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
                 it.write(savetree.toByteArray())
             }
