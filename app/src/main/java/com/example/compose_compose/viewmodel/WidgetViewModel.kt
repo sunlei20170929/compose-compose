@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import org.json.JSONObject
 import java.util.Stack
 import javax.inject.Inject
@@ -63,17 +64,21 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
 
     private fun stackPop():String{
         return if(!travelStack.empty()){
-            return travelStack.pop()
+            travelStack.pop()
+            return "\n"+"}"
         }
-        else
-            "}" //end of stack
+        else "END"
+//            "\n"+"}"+"\n" //end of stack
     }
 
     private fun addNode(node:String){
-        codeStringBuilder.append("$node(){\n")
+        codeStringBuilder.append("\n$node(){\n")
+    }
+    private fun addNodeWithEnd(node:String){
+        codeStringBuilder.append("\n$node(){\n}")
     }
 
-    private fun addBrace(){
+    private fun addEndBrace(){
         codeStringBuilder.append("\n"+"}"+"\n")
     }
 
@@ -84,6 +89,7 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
             }
         }
         val fileContent = codeStringBuilder.toString()
+        Log.w("draw","saved string is $fileContent")
         codeStringBuilder.clear()
         return JSONObject(fileContent)
     }
@@ -100,35 +106,43 @@ class WidgetViewModel @Inject constructor(application: Application) : AndroidVie
         if(tree._children.size>0){
             val nodes = tree._children
             for(node in nodes){
-                stackPush(node.name)
                 if(node._children.isEmpty()){
-                    addNode(node.name)
-                    addBrace()
+                    addNodeWithEnd(node.name)
                 }else{
-                    addNode("\t${node.name}(){\n")
+                    stackPush(node.name)
+                    addNode(node.name)
                     travelTree(node)
                 }
             }
         }
     }
 
-    fun generateTreeCode(filename:String){
-        viewModelScope.launch {
-            withContext(Dispatchers.Default){
-                //clear all temp container
-                codeStringBuilder.clear()
-                travelStack.clear()
-                //read data
-                val tree = fromJsonToTree(openFiletoJSON(filename))
-                //travel
-                travelTree(tree)
-                while(travelStack.isNotEmpty()){
-                    stackPop()
-                }
-                val code = codeStringBuilder.toString()
-                Log.e("draw","code:\n$code")
+    var result = ""
+    fun generateTreeCode(filename:String):String{
+        val job = viewModelScope.launch {
+//            withContext(Dispatchers.Default){
+
+            //clear all temp container
+            codeStringBuilder.clear()
+            travelStack.clear()
+
+            //read data
+            val tree = fromJsonToTree(openFiletoJSON(filename))
+
+            //travel
+            travelTree(tree)
+            while(travelStack.isNotEmpty()){
+                codeStringBuilder.append(stackPop())
             }
+            val code = codeStringBuilder.toString()
+            Log.e("draw","code:\n$code")
+            result = code
+
+//            }
         }
+
+
+        return result
 
     }
 
