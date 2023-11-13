@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -78,7 +79,7 @@ fun itemContent(modifier:Modifier, fname:String, delete:((String)-> Unit)?,showC
                 .weight(1f)
                 .padding(start = 16.dp)
                 .wrapContentWidth(Alignment.Start),
-
+                color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.titleLarge,
                 text = fname)
             Button(onClick = {
@@ -109,7 +110,7 @@ fun itemContent(modifier:Modifier, fname:String, delete:((String)-> Unit)?,showC
                 Text(modifier= Modifier
                     .padding(16.dp)
                     .background(color = MaterialTheme.colorScheme.background)
-                    .wrapContentWidth(),text=getCode(fname))
+                    .fillMaxWidth(),text=getCode(fname))
             }
 
         }

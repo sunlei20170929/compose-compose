@@ -5,11 +5,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +41,7 @@ enum class ComponentType{
     LAYOUT,LAZYLAYOUT,COMPONENT
 }
 val pages = ComponentType.values()
-val tabTitles = listOf("layout","lazylayout","component")
+val tabTitles = listOf("Layout","LazyLayout","Component")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -48,13 +52,15 @@ fun homeContent(modifier: Modifier, gotoScreen: ((String)->Unit)?){
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState,
+
         drawerContent = {
         ModalDrawerSheet {
-            Text("Drawer title",style = androidx.compose.material.MaterialTheme.typography.subtitle1, modifier = Modifier.padding(16.dp))
+            Text("GOTO",style = androidx.compose.material.MaterialTheme.typography.subtitle1, modifier = Modifier.padding(16.dp).fillMaxWidth(),)
             Spacer(Modifier.height(24.dp))
             NavigationDrawerItem(
-                label = { Text(text = "My Widget") },
+                label = { Text(text = "Saved Widgets") },
                 selected = false,
+                icon = {Icons.Default.DateRange},
                 onClick = {
                     if (gotoScreen != null) {
                         gotoScreen("widgetlist")
@@ -62,7 +68,13 @@ fun homeContent(modifier: Modifier, gotoScreen: ((String)->Unit)?){
                 }
             )
             Spacer(Modifier.height(24.dp))
-            Text("About",modifier = Modifier.padding(16.dp))
+            NavigationDrawerItem(
+                label = { Text(text = "About") },
+                icon = {Icons.Default.Info},
+                selected = false,
+                onClick = {}
+            )
+
         }
     }) {
         Scaffold{
@@ -96,8 +108,8 @@ fun homeTab(pagerState: PagerState){
                     pagerState.animateScrollToPage(index)
                 }},
                 text = { Text(text = tabTitles[index]) },
-                unselectedContentColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedContentColor = MaterialTheme.colorScheme.secondary
+                unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                selectedContentColor = MaterialTheme.colorScheme.onSecondary
             )
         }
     }
