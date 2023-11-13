@@ -169,7 +169,7 @@ fun DrawTree(modifier:Modifier, nodes: TreeNode, redraw: Boolean){
             }
             Row(modifier.padding(horizontal = 10.dp)
             ){
-                DrawTree(modifier =Modifier.background(color = Color.Blue), nodes = node, redraw)
+                DrawTree(modifier =Modifier.background(color = boxColor), nodes = node, redraw)
             }
         }
 
