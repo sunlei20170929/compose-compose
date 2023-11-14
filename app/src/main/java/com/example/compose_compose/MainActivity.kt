@@ -73,7 +73,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             val parentEntry = remember(it) { navController.getBackStackEntry("myhome")}
             val widgetViewModel = hiltViewModel<WidgetViewModel>()
             WidgetScreen(onBackPressed = { navController.popBackStack()},widgetViewModel)
-
         }
 
         //nested navigation

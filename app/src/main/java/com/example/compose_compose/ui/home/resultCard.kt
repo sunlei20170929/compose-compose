@@ -122,7 +122,9 @@ fun dropContent(modifier: Modifier){
         }
 
         DrawTree(modifier, nodes = tree.value,reCompose)
-        CloseButton ({ treeClear() }, { saveTree(fileName) })
+        if(tree.value._children.isNotEmpty()){
+            CloseButton ({ treeClear() }, { saveTree(fileName) })
+        }
 
     }
 

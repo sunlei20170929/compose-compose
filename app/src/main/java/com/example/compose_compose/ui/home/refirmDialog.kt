@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -101,7 +103,7 @@ fun saveTreeDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .height(260.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
@@ -118,6 +120,13 @@ fun saveTreeDialog(
 //                    modifier = Modifier
 //                        .height(160.dp)
 //                )
+                TextButton(
+                    onClick = {  },
+                    modifier = Modifier.padding(8.dp),
+                ) {
+                    Text("Save To File",style = MaterialTheme.typography.h4)
+                }
+
                 BasicTextField(
                     modifier = Modifier.border(1.dp, Color.Gray, RectangleShape),
                     value = textFieldState,
